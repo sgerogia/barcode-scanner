@@ -2,6 +2,26 @@
 <head>
 <title>Barcde scanner</title>
 <script type="text/javascript" src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.block {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.block:hover {
+  background-color: #ddd;
+  color: black;
+}
+</style>
 </head>
 
 <body>
@@ -14,7 +34,7 @@
     </ul>
 </p>
 <div id="scanner-container"></div>
-<button id="btnScan" onclick="scan()">Scan</button>
+<button class="block" id="btnScan" onclick="scan()">Scan</button>
 
 <script>
     function toggleButton() {
