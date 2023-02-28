@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>Barcde scanner</title>
+<script type="text/javascript" src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
+</head>
+
+<body>
+
+<p>
+    <ul>
+    <li>Point your camera at a Code 128 barcode</li>
+    <li>Click the "Scan" button to see the camera view</li>
+    <li>Once recognised, the number will appear below</li>
+    </ul>
+</p>
+<div id="scanner-container"></div>
+<button id="btnScan" onclick="scan()">Scan</button>
+
+<script>
+    function toggleButton() {
+        var btn = document.getElementById('btnScan');
+        btn.disabled = !btn.disabled;
+    }
+
+    function clearScanner() {
+        var scannerContainer = document.getElementById('scanner-container');
+        scannerContainer.innerHTML = '';
+    }
+
+    function scan() {
+        toggleButton();
+        clearScanner();
+
+        // Get the video stream from the device camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+          .then(function (stream) {
+            // Create a video element to display the camera stream
+            var video = document.createElement('video');
+            video.setAttribute('autoplay', '');
+            video.setAttribute('playsinline', '');
+            video.srcObject = stream;
+            document.getElementById('scanner-container').appendChild(video);
+
+            // Start QuaggaJS and configure it to scan Code 128 barcodes
+            Quagga.init({
+              inputStream: {
+                name: 'Live',
+                type: 'LiveStream',
+                target: video
+              },
+              decoder: {
+                readers: ['code_128_reader']
+              }
+            }, function (err) {
+              if (err) {
+                console.log(err);
+                toggleButton();
+                clearScanner();
+                return;
+              }
+              Quagga.start();
+            });
+
+            // Listen for the 'detected' event when a barcode is scanned
+            Quagga.onDetected(function (result) {
+              console.log(result.codeResult.code);
+              toggleButton();
+              var scannerContainer = document.getElementById('scanner-container');
+              scannerContainer.innerHTML = '<b>Barcode: ' + result.codeResult.code + '</b>';
+
+              // Stop the camera stream
+              stream.getTracks().forEach(function (track) {
+                track.stop();
+              });
+            });
+          })
+          .catch(function (err) {
+            console.log(err);
+
+            toggleButton();
+            clearScanner();
+          });
+  }
+</script>
+</body>
+</html>
