@@ -35,7 +35,7 @@ function openWhatsApp() {
     // Set a timeout to check if WhatsApp is installed
     var timeout = setTimeout(function () {
         // Show a message if WhatsApp is not installed
-        document.getElementById("result").innerHTML = "No WhatsApp installed!";
+        document.getElementById("result").innerHTML = "No WhatsApp!";
 
         // Close the window
         win.close();
@@ -43,6 +43,7 @@ function openWhatsApp() {
 
     // Add an event listener to cancel the timeout if the window loses focus
     window.addEventListener("blur", function () {
+        document.getElementById("result").innerHTML = "WhatsApp installed!";
         clearTimeout(timeout);
     });
 }
